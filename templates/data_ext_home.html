@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Extraction & Query System</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#option_form').on('submit', function(e) {
+                e.preventDefault();
+                var selectedOption = $('input[name="option"]:checked').val();
+                
+                if (selectedOption === 'upload_pdf') {
+                    window.location.href = '/data_extraction/upload_pdf';  // Redirect to the PDF upload page
+                } else if (selectedOption === 'text_entry') {
+                    window.location.href = '/data_extraction/text_entry';  // Redirect to the text entry page
+                } else if (selectedOption === 'add_link') {
+                    window.location.href = '/data_extraction/add_link';  // Redirect to the add link page
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Data Extraction & Query System</h1>
+    <form id="option_form" method="post">
+        <label><input type="radio" name="option" value="upload_pdf" checked> Upload a PDF</label><br>
+        <label><input type="radio" name="option" value="text_entry"> Enter Text Directly</label><br>
+        <label><input type="radio" name="option" value="add_link"> Add a Hyperlink</label><br>
+        <button type="submit">Proceed</button>
+    </form>
+</body>
+</html>
