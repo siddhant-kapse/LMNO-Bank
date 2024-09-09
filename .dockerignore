@@ -1,0 +1,12 @@
+# Exclude the virtual environment
+venv/
+
+# Python bytecode files
+__pycache__/
+*.pyc
+
+# Git repo files
+.git
+
+# Ignore .env files if they contain secrets you don't want in the image
+.env
