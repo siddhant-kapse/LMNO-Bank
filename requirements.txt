@@ -1,2 +1,12 @@
 Flask
 pandas
+ipykernel
+openai
+pypdf
+python-dotenv
+langchain
+langchain_community
+tiktoken
+langchain_huggingface
+faiss-cpu
+langchain-openai
