@@ -1,11 +1,12 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const app = express();
 
 app.use(express.json());
 
-const SECRET = 'SECr3t';  // This should be in an environment variable in a real application
+const SECRET = process.env.SECRET; ;  // This should be in an environment variable in a real application
 
 
 
@@ -114,10 +115,20 @@ const authenticateJwt = (req, res, next) => {
   }
 };
 
-// Connect to MongoDB
-mongoose.connect('mongodb+srv://siddhantsimple2:MBnQDcyBveJg1DwS@cluster0.zcfoo.mongodb.net/LMNO2')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Error connecting to MongoDB:', err.message));
+const mongoURI = process.env.MONGODB_URI; // Get the URI from .env
+
+if (!mongoURI) {
+  console.error("MONGODB_URI environment variable is not set.");
+  process.exit(1); // Exit the application if the URI is missing
+}
+
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('Connected to MongoDB-New'))
+.catch(err => console.error('Error connecting to MongoDB:', err.message));
+
 
 // User routes
 app.post('/signup', async (req, res) => {
