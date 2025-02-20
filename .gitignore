@@ -2,3 +2,4 @@ venv
 .env
 rough-folder/
 files/
+uploads/
