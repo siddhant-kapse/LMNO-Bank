@@ -1,0 +1,6 @@
+rough-folder/
+.env
+files/
+venv
+node_modules/
+rough.js
