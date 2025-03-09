@@ -44,12 +44,10 @@ const customerSchema2 = new mongoose.Schema({
   },
   date_of_birth: {
     type: Date,
-    required: true,
   },
   phone_number: {
     type: String,
     required: true,
-    match: [/^\d{10}$/, 'Please provide a valid phone number'],
   },
   address: {
     type: String,
@@ -58,12 +56,10 @@ const customerSchema2 = new mongoose.Schema({
   pan: {
     type: String,
     required: true,
-    match: [/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Please provide a valid PAN number'],
   },
   aadhar_no: {
     type: String,
     required: true,
-    match: [/^\d{12}$/, 'Please provide a valid Aadhar number'],
   },
   created_at: {
     type: Date,
@@ -94,9 +90,78 @@ customerSchema2.pre('save', async function (next) {
   }
 });
 
-const Customer = mongoose.model('Customer', customerSchema2)
+// Account Schema
+const accountSchema = new mongoose.Schema({
+    customer_id: {
+      type: Number,
+      required: true,
+      ref: 'Customer',
+    },
+    account_number: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    balance: {
+      type: Number,
+      default: 10000.0,
+    },
+    created_at: {
+      type: Date,
+      default: Date.now,
+    },
+  });
+  
+  accountSchema.pre('save', async function (next) {
+    if (!this.account_number) {
+      let isUnique = false;
+      while (!isUnique) {
+        // Generate a 10-digit random number
+        const accountNumber = Math.floor(1000000000 + Math.random() * 900000).toString();
+  
+        // Check if the account number already exists
+        const existingAccount = await Account.findOne({ account_number: accountNumber });
+  
+        // If the account number doesn't exist, use it
+        if (!existingAccount) {
+          this.account_number = accountNumber;
+          isUnique = true;
+        }
+      }
+    }
+    next();
+  });
+
+  // Transaction Schema
+  const transactionSchema = new mongoose.Schema({
+    customer_id: {
+      type: Number,
+      required: true,
+      ref: 'Customer',
+    },
+    transaction_type: {
+      type: String,
+      enum: ['Deposit', 'Withdrawal', 'Transfer'],
+      required: true,
+    },
+    amount: {
+      type: Number,
+      required: true,
+    },
+    transaction_date: {
+      type: Date,
+      default: Date.now,
+    },
+    description: {
+      type: String,
+      maxlength: 255,
+    },
+  });
   
 
+	
 const User = mongoose.model('User', userSchema);
-
-module.exports = { User, Customer };
+const Customer = mongoose.model('Customer', customerSchema2);
+const Account = mongoose.model('Account', accountSchema);
+const Transaction = mongoose.model('Transaction', transactionSchema);
+module.exports = { User, Customer, Account, Transaction };

@@ -28,12 +28,27 @@ router.post('/onboarding', authenticateJwt, async (req, res) => {
       aadhar_no,
     });
 
-    // Save the new customer, customer_id will be auto-generated
+    // Save the new customer
     await newCustomer.save();
-    res.status(201).json({ message: 'Customer profile created successfully', customer: newCustomer });
-  } catch (error) {
-    res.status(500).json({ message: 'Error creating customer profile', error: error.message });
-  }
+
+    // Create a new account for the customer
+    const newAccount = new Account({
+      customer_id: newCustomer.customer_id, // Use the auto-generated customer_id
+      balance: 10000.0, // Default balance
+    });
+
+    await newAccount.save();
+
+
+    // Save the new customer, customer_id will be auto-generated
+    res.status(201).json({
+      message: 'Customer profile and account created successfully',
+      customer: newCustomer,
+      account: newAccount,
+    });
+    } catch (error) {
+      res.status(500).json({ message: 'Error creating customer profile and account', error: error.message });
+    }
 });
 
 module.exports = router;
