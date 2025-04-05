@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import TermsModal from '../components/TermsModal';
+// import axios from 'axios';
 
 const CustomerVerification = () => {
   const [step, setStep] = useState(1);
@@ -27,23 +28,39 @@ const CustomerVerification = () => {
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
+  
     setIsLoading(true);
     setVerificationResult(null);
-
-    // Simulate backend verification (replace with actual API call)
-    setTimeout(() => {
-      const isHuman = Math.random() > 0.5; // Random result for testing
-      setVerificationResult(isHuman ? 'success' : 'failure');
-      setIsLoading(false);
-
-      if (isHuman) {
-        // Upload image to S3 and save link in MongoDB (simulated)
-        console.log('Image uploaded and link saved to MongoDB');
+  
+    // Prepare the file for upload
+    const formData = new FormData();
+    formData.append('file', file);
+  
+    try {
+      // Call the Python backend for verification
+      const response = await axios.post('http://localhost:8000/verify-image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      if (response.data.status === 'success') {
+        setVerificationResult('success');
+        const s3Link = response.data.s3_link;
+        console.log('Image uploaded to S3:', s3Link);
+        // Save S3 link in MongoDB (we'll implement this next)
+      } else {
+        setVerificationResult('failure');
       }
-    }, 2000); // Simulate 2-second delay
+    } catch (error) {
+      console.error('Error verifying image:', error);
+      setVerificationResult('failure');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
+  
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       {showTerms && (
