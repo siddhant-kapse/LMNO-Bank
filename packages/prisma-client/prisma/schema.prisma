@@ -1,0 +1,60 @@
+// packages/prisma-client/prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["mongoDb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  customers Customer[]
+}
+
+model Customer {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  customerId   Int      @unique
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String   @db.ObjectId
+  firstName    String
+  lastName     String
+  dateOfBirth  DateTime?
+  phoneNumber  String
+  address      String
+  pan          String
+  aadharNo     String
+  accounts     Account[]
+  transactions Transaction[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Account {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  accountNumber String    @unique
+  balance       Float     @default(10000.0)
+  customer      Customer  @relation(fields: [customerId], references: [customerId])
+  customerId    Int
+  createdAt     DateTime  @default(now())
+}
+
+model Transaction {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  transactionType String   // "DEPOSIT", "WITHDRAWAL", "TRANSFER"
+  amount          Float
+  description     String?
+  customer        Customer @relation(fields: [customerId], references: [customerId])
+  customerId      Int
+  createdAt       DateTime @default(now())
+}
+
+model Counter {
+  key   String @unique
+  value Int
+}
