@@ -18,7 +18,6 @@ export const JwtPayloadSchema = z.object({
 export const CustomerSchema = z.object({
   firstName: z.string().max(100),
   lastName: z.string().max(100),
-  dateOfBirth: z.date().optional(),
   phoneNumber: z.string().min(10),
   address: z.string(),
   pan: z.string().regex(/[A-Z]{5}[0-9]{4}[A-Z]{1}/),

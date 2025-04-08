@@ -1,7 +1,6 @@
 // packages/prisma-client/prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["mongoDb"]
 }
 
 datasource db {
@@ -24,7 +23,6 @@ model Customer {
   userId       String   @db.ObjectId
   firstName    String
   lastName     String
-  dateOfBirth  DateTime?
   phoneNumber  String
   address      String
   pan          String
@@ -55,6 +53,6 @@ model Transaction {
 }
 
 model Counter {
-  key   String @unique
+  key   String @id @map("_id")
   value Int
 }
