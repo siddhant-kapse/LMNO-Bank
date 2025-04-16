@@ -1,6 +1,6 @@
 // app/api/onboarding/route.ts
 import { NextResponse } from 'next/server';
-import { authenticate } from '../../middleware'; // wherever you keep the auth
+import { authenticate } from '../middleware'; // wherever you keep the auth
 import prisma from 'prisma-client';
 import { CustomerSchema } from 'common';
 
