@@ -18,6 +18,7 @@ export default function Home() {
         <h1 className="text-2xl font-bold text-center mb-6 text-blue-600">
           Welcome to LMNO Bank
         </h1>
+        <LoginSignup setIsLoggedIn={handleAuthSuccess}/>
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
       </div>
     </div>

@@ -16,7 +16,7 @@ export const LoginSignup: React.FC<LoginSignupProps> = ({ setIsLoggedIn }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const endpoint = isLogin ? '/api/auth/login' : '/api/auth/signup';
+    const endpoint = isLogin ? '/api/login' : '/api/signup';
     
     try {
       const response = await fetch(endpoint, {
@@ -32,10 +32,8 @@ export const LoginSignup: React.FC<LoginSignupProps> = ({ setIsLoggedIn }) => {
         return;
       }
 
-      if (data.token) {
-        router.push('/dashboard');
-        setIsLoggedIn(true);
-      }
+      router.push('/dashboard');
+      setIsLoggedIn(true);
     } catch (error) {
       setErrors(['Network error. Please try again.']);
     }
@@ -53,7 +51,7 @@ export const LoginSignup: React.FC<LoginSignupProps> = ({ setIsLoggedIn }) => {
         <label className="block text-gray-700 mb-2">Username</label>
         <input
           type="text"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded text-red-700"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required
@@ -64,14 +62,14 @@ export const LoginSignup: React.FC<LoginSignupProps> = ({ setIsLoggedIn }) => {
         <label className="block text-gray-700 mb-2">Password</label>
         <input
           type="password"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border rounded text-red-700"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
       </div>
       
-      <div className="flex gap-4">
+      <div className="flex justify-between w-full">
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -81,7 +79,7 @@ export const LoginSignup: React.FC<LoginSignupProps> = ({ setIsLoggedIn }) => {
         </button>
         <button
           type="submit"
-          className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           onClick={() => setIsLogin(false)}
         >
           Sign Up

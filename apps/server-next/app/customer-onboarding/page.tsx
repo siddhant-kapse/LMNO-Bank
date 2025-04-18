@@ -27,6 +27,7 @@ export default function CustomerOnboarding() {
   });
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -61,6 +62,7 @@ export default function CustomerOnboarding() {
 
   return (
     <div className="min-h-screen bg-gray-100">
+      <Navbar setIsLoggedIn={setIsLoggedIn} />
       <div className="p-8 max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-blue-600">Customer Onboarding</h1>
         

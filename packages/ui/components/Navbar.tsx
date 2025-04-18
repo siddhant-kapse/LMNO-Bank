@@ -1,3 +1,4 @@
+'use client';
 import { useRouter } from 'next/navigation';
 
 interface NavbarProps {
@@ -16,10 +17,9 @@ export const Navbar: React.FC<NavbarProps> = ({ setIsLoggedIn }) => {
   return (
     <nav className="bg-blue-600 p-4 text-white">
       <div className="container mx-auto flex justify-between items-center">
-        <span className="font-bold text-xl">Dashboard</span>
         <div className="space-x-4">
           <button 
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/dashboard')}
             className="hover:underline"
           >
             Home
