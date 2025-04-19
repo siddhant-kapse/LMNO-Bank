@@ -13,14 +13,14 @@ model User {
   username  String   @unique
   password  String
   createdAt DateTime @default(now())
-  customers Customer[]
+  customers Customer[] @relation("UserToCustomer")
 }
 
 model Customer {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   customerId   Int      @unique
-  user         User     @relation(fields: [userId], references: [id])
-  userId       String   @db.ObjectId
+  username     String   @unique
+  user         User     @relation("UserToCustomer",fields: [username], references: [username])
   firstName    String
   lastName     String
   phoneNumber  String
@@ -31,6 +31,7 @@ model Customer {
   transactions Transaction[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  balance      Int @default(100)
 }
 
 model Account {

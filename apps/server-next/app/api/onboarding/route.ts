@@ -14,16 +14,22 @@ export async function POST(req: Request) {
 
     const customer = await prisma.customer.create({
       data: {
-        userId: user.id,
+        user: {
+          connect: {
+            username: user.username, // this sets up the relation properly
+          }
+        },
         customerId: 1000 + Math.floor(Math.random() * 9000), // Random customer ID
-        ...validated,
-        // accounts: {
-        //   create: { balance: 10000.0}
-        // }
+        firstName: validated.firstName,
+        lastName: validated.lastName,
+        phoneNumber: validated.phoneNumber,
+        address: validated.address,
+        pan: validated.pan,
+        aadharNo: validated.aadharNo,
+        balance: validated.balance || 100,
       },
       include: { accounts: true }
     });
-
     return NextResponse.json(customer);
   } catch (error) {
     return NextResponse.json(

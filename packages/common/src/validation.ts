@@ -21,7 +21,9 @@ export const CustomerSchema = z.object({
   phoneNumber: z.string().min(10),
   address: z.string(),
   pan: z.string().regex(/[A-Z]{5}[0-9]{4}[A-Z]{1}/),
-  aadharNo: z.string().length(12)
+  aadharNo: z.string().length(12),
+  username: z.string().email().optional(),
+  balance: z.number().positive().default(0).optional()
 });
 
 export const AccountSchema = z.object({
