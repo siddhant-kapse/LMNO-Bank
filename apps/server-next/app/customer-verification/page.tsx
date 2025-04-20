@@ -31,23 +31,25 @@ const CustomerVerification: React.FC = () => {
   const handleImageUpload = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
+  
     setImage(file);
     setIsLoading(true);
     setVerificationResult(null);
-
-    // Simulated verification logic
-    setTimeout(() => {
-      const isHuman = 0.8 > 0.5;
-      setVerificationResult(isHuman ? 'success' : 'failure');
-      setIsLoading(false);
-
-      if (isHuman) {
-        console.log('Image uploaded and link saved to DB');
-        // TODO: actual API call to upload and store image
-      }
-    }, 2000);
+  
+    const formData = new FormData();
+    formData.append('step', '1');
+    formData.append('image', file);
+  
+    const res = await fetch('/api/verification', {
+      method: 'POST',
+      body: formData,
+    });
+  
+    const data = await res.json();
+    setVerificationResult(data.success.result ? 'success' : 'failure');
+    setIsLoading(false);
   };
+  
 
   return (
     <div className="min-h-screen bg-yellow-100 p-8">
@@ -73,8 +75,8 @@ const CustomerVerification: React.FC = () => {
             <p className="mb-4">Please upload a clear image of yourself.</p>
             <input type="file" accept="image/*" className="mb-4" onChange={handleImageUpload} />
             {isLoading && <p className="text-blue-600">Verifying image...</p>}
-            {verificationResult === 'success' && <p className="text-green-600">Image verified successfully!</p>}
-            {verificationResult === 'failure' && <p className="text-red-600">Image verification failed. Try again.</p>}
+            {verificationResult === 'success' && <p className="text-green-600">Human Image Detected Kindly Proceed!</p>}
+            {verificationResult === 'failure' && <p className="text-red-600">Not a human Image. Try again.</p>}
           </div>
         )}
 
