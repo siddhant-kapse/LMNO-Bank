@@ -12,6 +12,11 @@ const CustomerVerification: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [verificationResult, setVerificationResult] = useState<VerificationResult>(null);
   const [showTerms, setShowTerms] = useState<boolean>(true);
+  const [front, setFront] = useState<File | null>(null);
+  const [back, setBack] = useState<File | null>(null);
+  const [result, setResult] = useState<string | null>(null);
+  const [details, setDetails] = useState<{ front_clear: boolean; back_clear: boolean } | null>(null);
+
   const router = useRouter();
 
   const handleNext = () => {
@@ -51,6 +56,44 @@ const CustomerVerification: React.FC = () => {
   };
   
 
+  const handleSubmit = async () => {
+    if (!front || !back) {
+      alert('Please upload both front and back images.');
+      return;
+    }
+
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append('step', '2');
+    formData.append('front', front);
+    formData.append('back', back);
+
+    try {
+      const res = await fetch('/api/verification', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setResult('success');
+      } else {
+        setResult('failure');
+      }
+
+      if (data.details) {
+        setDetails(data.details);
+      }
+
+    } catch (error) {
+      console.error('Step 2 verification failed:', error);
+      setResult('error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-yellow-100 p-8">
       {/* {showTerms && (
@@ -82,10 +125,35 @@ const CustomerVerification: React.FC = () => {
 
         {step === 2 && (
           <div>
-            <h2 className="text-xl font-semibold mb-4">Upload Aadhaar/PAN</h2>
-            <p className="mb-4">Upload front and rear image of Aadhaar or PAN card.</p>
-            <input type="file" className="mb-2" />
-            <input type="file" className="mb-2" />
+            <h2 className="text-xl font-semibold mb-2">Step 2: Upload Front & Back of ID</h2>
+
+            <input type="file" accept="image/*" onChange={(e) => setFront(e.target.files?.[0] || null)} />
+            <br />
+            <input type="file" accept="image/*" onChange={(e) => setBack(e.target.files?.[0] || null)} />
+            <br />
+
+            <button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              {isLoading ? 'Verifying...' : 'Submit'}
+            </button>
+
+            {result && (
+              <div className="mt-4">
+                <p className={`font-semibold ${result === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+                  Result: {result === 'success' ? 'ID is Clear' : 'ID Not Clear'}
+                </p>
+
+                {details && (
+                  <div className="text-sm text-gray-700 mt-2">
+                    <p>Front Image: {details.front_clear ? 'Clear ✅' : 'Unclear ❌'}</p>
+                    <p>Back Image: {details.back_clear ? 'Clear ✅' : 'Unclear ❌'}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 

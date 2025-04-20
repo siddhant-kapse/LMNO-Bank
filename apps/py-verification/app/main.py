@@ -18,10 +18,6 @@ app.add_middleware(
 async def startup_event():
     print("✅ FastAPI is running on http://localhost:8005")
 
-@app.get("/test")
-async def test():
-    return {"message": "API is working"}
-
 
 @app.post("/step1")
 async def step1(image: UploadFile = File(...)):
@@ -29,10 +25,28 @@ async def step1(image: UploadFile = File(...)):
     print(f"Image filename: {image.filename}")  # And this
     print(f"Image content type: {image.content_type}")  # And this
     content = await image.read()
-    print(f"Image content length: {len(content)}")  # And this
     result = predict_image(content)
     print(f"Prediction result: {result}")  # And this
     return {"success": result}
+
+@app.post("/step2")
+async def check_clarity(front: UploadFile = File(...), back: UploadFile = File(...)):
+    front_img = await front.read()
+    back_img = await back.read()
+
+    front_pred =  result = predict_image(front_img)
+    back_pred =  result = predict_image(back_img)
+
+    # You can use a threshold like 0.5
+    # front_clear = front_pred > 0.5
+    # back_clear = back_pred > 0.5
+
+    return { "success": front_pred and back_pred,
+        "details": {
+            "front_clear": front_pred,
+            "back_clear": back_pred
+        }
+    }
 
 
 if __name__ == "__main__":
